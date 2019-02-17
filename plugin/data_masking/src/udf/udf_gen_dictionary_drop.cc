@@ -14,9 +14,9 @@
    51 Franklin Street, Suite 500, Boston, MA 02110-1335 USA */
 
 /*
-#include "global.h"
-#include "gen_dictionary_drop.h"
 #include "extern.h"
+#include "gen_dictionary_drop.h"
+#include "global.h"
 #include "utils.h"
 #include "utils_string.h"
 */
@@ -26,70 +26,62 @@
 #include "plugin/data_masking/include/udf/udf_utils.h"
 #include "plugin/data_masking/include/udf/udf_utils_string.h"
 
-
-static bool gen_dictionary_drop_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
-{
+static bool gen_dictionary_drop_init(UDF_INIT *initid, UDF_ARGS *args,
+                                     char *message) {
   DBUG_ENTER("gen_blacklist_init");
 
-  if (args->arg_count != 1)
-  {
-    std::snprintf(message, MYSQL_ERRMSG_SIZE, "Wrong argument list: gen_dictionary_drop(dictionary name)");
+  if (args->arg_count != 1) {
+    std::snprintf(message, MYSQL_ERRMSG_SIZE,
+                  "Wrong argument list: gen_dictionary_drop(dictionary name)");
     DBUG_RETURN(true);
   }
 
-  if (args->arg_type[0] != STRING_RESULT)
-  {
-    std::snprintf(message, MYSQL_ERRMSG_SIZE, "Wrong argument type: gen_dictionary_drop(string)");
+  if (args->arg_type[0] != STRING_RESULT) {
+    std::snprintf(message, MYSQL_ERRMSG_SIZE,
+                  "Wrong argument type: gen_dictionary_drop(string)");
     DBUG_RETURN(true);
   }
 
   initid->maybe_null = 0;
-  initid->const_item = 0; // Non-Deterministic: same arguments will produce different values
+  initid->const_item =
+      0;  // Non-Deterministic: same arguments will produce different values
   initid->ptr = NULL;
 
   DBUG_RETURN(false);
 }
 
-static void gen_dictionary_drop_deinit(UDF_INIT *initid)
-{
+static void gen_dictionary_drop_deinit(UDF_INIT *initid) {
   DBUG_ENTER("gen_dictionary_drop_deinit");
 
-  if (initid->ptr)
-    free(initid->ptr);
+  if (initid->ptr) free(initid->ptr);
 
   return;
 }
 
 /**
-* Removes a dictionary from the dictionary registry.
-*
-* @param dictionary_name: A string that names the dictionary to remove from the dictionary registry.
-*
-* @return A string that indicates whether the drop operation succeeded.
-*    "Dictionary removed" indicates success.
-*    "Dictionary removal error" indicates failure.
-*/
-static std::string _gen_dictionary_drop(const char *dictionary_name)
-{
+ * Removes a dictionary from the dictionary registry.
+ *
+ * @param dictionary_name: A string that names the dictionary to remove from the
+ * dictionary registry.
+ *
+ * @return A string that indicates whether the drop operation succeeded.
+ *    "Dictionary removed" indicates success.
+ *    "Dictionary removal error" indicates failure.
+ */
+static std::string _gen_dictionary_drop(const char *dictionary_name) {
   std::string res = "Dictionary removal error: unknown";
   std::string s_dictname(dictionary_name);
   mysql::plugins::tolower(s_dictname);
 
   mysql_mutex_lock(&g_data_masking_dict_mutex);
   // Check if dictionary exists in global list
-  if (g_data_masking_dict->count(s_dictname) == 1)
-  {
-    if (g_data_masking_dict->erase(s_dictname) == 1)
-    {
+  if (g_data_masking_dict->count(s_dictname) == 1) {
+    if (g_data_masking_dict->erase(s_dictname) == 1) {
       res = "Dictionary removed";
-    }
-    else
-    {
+    } else {
       res = "Dictionary removal error: erase failed";
     }
-  }
-  else
-  {
+  } else {
     res = "Dictionary removal error: dictionary not present in global list";
   }
   mysql_mutex_unlock(&g_data_masking_dict_mutex);
@@ -97,8 +89,8 @@ static std::string _gen_dictionary_drop(const char *dictionary_name)
   return res;
 }
 
-static char * gen_dictionary_drop(UDF_INIT *, UDF_ARGS *args, char *result, unsigned long *length, char *, char *)
-{
+static char *gen_dictionary_drop(UDF_INIT *, UDF_ARGS *args, char *result,
+                                 unsigned long *length, char *, char *) {
   DBUG_ENTER("gen_dictionary_drop");
 
   std::string res = _gen_dictionary_drop(args->args[0]);
@@ -108,11 +100,8 @@ static char * gen_dictionary_drop(UDF_INIT *, UDF_ARGS *args, char *result, unsi
   DBUG_RETURN(result);
 }
 
-udf_descriptor udf_gen_dictionary_drop()
-{
-  return {"gen_dictionary_drop",
-          Item_result::STRING_RESULT,
+udf_descriptor udf_gen_dictionary_drop() {
+  return {"gen_dictionary_drop", Item_result::STRING_RESULT,
           reinterpret_cast<Udf_func_any>(gen_dictionary_drop),
-          gen_dictionary_drop_init,
-          gen_dictionary_drop_deinit};
+          gen_dictionary_drop_init, gen_dictionary_drop_deinit};
 }

@@ -20,16 +20,16 @@
 #include <unordered_map>
 #include <vector>
 
+#include "m_string.h"
 #include "my_dbug.h"
 #include "my_sys.h"
-#include "m_string.h"
-#include "sql/log.h"
+#include "mysql/plugin.h"
 #include "mysql/psi/mysql_cond.h"
 #include "mysql/psi/mysql_memory.h"
 #include "mysql/psi/psi_mutex.h"
-#include "thr_mutex.h"
-#include "mysql/plugin.h"
+#include "sql/log.h"
 #include "sql/sql_plugin.h"
+#include "thr_mutex.h"
 
 #define PAN_LENGTH_1 15
 #define PAN_LENGTH_2 16
@@ -42,4 +42,4 @@ extern mysql_mutex_t g_data_masking_dict_mutex;
 extern void init_data_masking_memory();
 extern void deinit_data_masking_memory();
 
-#endif //_PLUGIN_DATA_MASKING_PLUGIN_H
+#endif  //_PLUGIN_DATA_MASKING_PLUGIN_H

@@ -13,46 +13,45 @@
    along with this program; if not, write to the Free Software Foundation,
    51 Franklin Street, Suite 500, Boston, MA 02110-1335 USA */
 
-
-#include "plugin/data_masking/include/plugin.h"
 #include "plugin/data_masking/include/udf/udf_gen_rnd_pan.h"
+#include "plugin/data_masking/include/plugin.h"
 #include "plugin/data_masking/include/udf/udf_utils.h"
 #include "plugin/data_masking/include/udf/udf_utils_string.h"
 
-static bool gen_rnd_pan_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
-{
+static bool gen_rnd_pan_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
   DBUG_ENTER("gen_rnd_pan_init");
 
-  if (args->arg_count != 0)
-  {
-    std::snprintf(message, MYSQL_ERRMSG_SIZE, "Wrong argument list: gen_rnd_pan()");
+  if (args->arg_count != 0) {
+    std::snprintf(message, MYSQL_ERRMSG_SIZE,
+                  "Wrong argument list: gen_rnd_pan()");
     DBUG_RETURN(true);
   }
 
   initid->maybe_null = 0;
-  initid->const_item = 0; // Non-Deterministic: same arguments will produce different values
+  initid->const_item =
+      0;  // Non-Deterministic: same arguments will produce different values
   initid->ptr = NULL;
 
   DBUG_RETURN(false);
 }
 
-static void gen_rnd_pan_deinit(UDF_INIT *initid)
-{
+static void gen_rnd_pan_deinit(UDF_INIT *initid) {
   DBUG_ENTER("gen_rnd_pan_deinit");
 
-  if (initid->ptr)
-    free(initid->ptr);
+  if (initid->ptr) free(initid->ptr);
 
   return;
 }
 
 /**
-* Returns a random payment card Primary Account Number:
-*
-* @return A random, but valid, payment card number.
-*/
-static char * gen_rnd_pan(UDF_INIT *initid, UDF_ARGS *args MY_ATTRIBUTE((unused)), char *result MY_ATTRIBUTE((unused)), unsigned long *length, char *is_null, char *is_error)
-{
+ * Returns a random payment card Primary Account Number:
+ *
+ * @return A random, but valid, payment card number.
+ */
+static char *gen_rnd_pan(UDF_INIT *initid,
+                         UDF_ARGS *args MY_ATTRIBUTE((unused)),
+                         char *result MY_ATTRIBUTE((unused)),
+                         unsigned long *length, char *is_null, char *is_error) {
   DBUG_ENTER("gen_rnd_pan");
 
   std::string pan = mysql::plugins::random_credit_card();
@@ -65,11 +64,8 @@ static char * gen_rnd_pan(UDF_INIT *initid, UDF_ARGS *args MY_ATTRIBUTE((unused)
   return initid->ptr;
 }
 
-udf_descriptor udf_gen_rnd_pan()
-{
-  return {"gen_rnd_pan",
-          Item_result::STRING_RESULT,
-          reinterpret_cast<Udf_func_any>(gen_rnd_pan),
-          gen_rnd_pan_init,
+udf_descriptor udf_gen_rnd_pan() {
+  return {"gen_rnd_pan", Item_result::STRING_RESULT,
+          reinterpret_cast<Udf_func_any>(gen_rnd_pan), gen_rnd_pan_init,
           gen_rnd_pan_deinit};
 }

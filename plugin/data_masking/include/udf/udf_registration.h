@@ -13,10 +13,10 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software Foundation,
    51 Franklin Street, Suite 500, Boston, MA 02110-1335 USA */
-   
+
 #define _PLUGIN_DATA_MASKING_UDFREGISTRATION_H
 
 bool register_udfs();
 bool unregister_udfs();
 
-#endif // _PLUGIN_DATA_MASKING_UDFREGISTRATION_H
+#endif  // _PLUGIN_DATA_MASKING_UDFREGISTRATION_H

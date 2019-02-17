@@ -23,12 +23,11 @@ t_mask_dict *g_data_masking_dict;
 PSI_mutex_key key_data_masking_mutex;
 mysql_mutex_t g_data_masking_dict_mutex;
 
-
 #ifdef HAVE_PSI_INTERFACE
 PSI_memory_key key_memory_data_masking;
-#endif // HAVE_PSI_INTERFACE
+#endif  // HAVE_PSI_INTERFACE
 
 void init_data_masking_memory();
 void deinit_data_masking_memory();
 
-#endif // _PLUGIN_DATA_MASKING_PLUGIN_MEMORY_H
+#endif  // _PLUGIN_DATA_MASKING_PLUGIN_MEMORY_H

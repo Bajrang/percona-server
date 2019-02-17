@@ -14,11 +14,10 @@
    along with this program; if not, write to the Free Software Foundation,
    51 Franklin Street, Suite 500, Boston, MA 02110-1335 USA */
 
-
 #define _PLUGIN_DATAMASKING_DICTIONARYLOAD_H
 
 #include "plugin/data_masking/include/udf/udf_descriptor.h"
 
 udf_descriptor udf_gen_dictionary_load();
 
-#endif // _PLUGIN_DATAMASKING_DICTIONARYLOAD_H
+#endif  // _PLUGIN_DATAMASKING_DICTIONARYLOAD_H
