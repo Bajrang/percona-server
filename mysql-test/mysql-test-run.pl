@@ -163,6 +163,7 @@ my $DEFAULT_SUITES =
   ."funcs_2,jp,stress,engines/iuds,engines/funcs,group_replication,audit_null,"
   ."interactive_utilities,innodb_stress,"
   ."audit_log,keyring_vault,"
+  ."data_masking,"
   ."tokudb.add_index,tokudb.alter_table,tokudb,tokudb.bugs,tokudb.parts,"
   ."tokudb.rpl,tokudb.perfschema,"
   ."rocksdb,rocksdb.rpl,rocksdb.sys_vars,"
